@@ -6,12 +6,12 @@ on:
     paths:
       - '**.tex'
       - '**.bib'
+      - '**.cls'
       - 'Chapters/**'
       - 'imgs/**'
       - 'logos/**'
   workflow_dispatch:
 
-# Add this permissions block needed for the bot to push
 permissions:
   contents: write
 
@@ -20,36 +20,65 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
       
-      - name: Compile LaTeX document
+      - name: Compile LaTeX document (Multiple passes)
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
-          continue_on_error: true
-          args: -pdf -interaction=nonstopmode -shell-escape
-          
+          latexmk_use_xelatex: false
+          latexmk_shell_escape: true
+          args: -pdf -interaction=nonstopmode -file-line-error
+          # Forcer la continuation même avec des warnings
+          continue_on_error: false
+        continue-on-error: true
+        id: latex_build
+      
+      # Vérifier si le PDF existe malgré les erreurs
+      - name: Check if PDF was generated
+        id: check_pdf
+        run: |
+          if [ -f "main.pdf" ]; then
+            echo "pdf_exists=true" >> $GITHUB_OUTPUT
+            echo "✅ PDF généré avec succès"
+          else
+            echo "pdf_exists=false" >> $GITHUB_OUTPUT
+            echo "❌ Erreur: PDF non généré"
+            exit 1
+          fi
       
       - name: Rename PDF
+        if: steps.check_pdf.outputs.pdf_exists == 'true'
         run: |
           mv main.pdf "IHM.pdf"
+          ls -lh IHM.pdf
       
       - name: Clean up auxiliary files
+        if: steps.check_pdf.outputs.pdf_exists == 'true'
         run: |
           rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk *.synctex.gz *.bbl *.blg *.bcf *.run.xml *.nav *.snm *.vrb
           rm -rf _minted-*
-          find . -name "*.aux" -type f -delete
+          find Chapters -name "*.aux" -type f -delete 2>/dev/null || true
       
       - name: Commit PDF to repository
+        if: steps.check_pdf.outputs.pdf_exists == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add -f "IHM.pdf"
-          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Auto-update compiled PDF [skip ci]"
+          
+          # Vérifier s'il y a des changements
+          if git diff --staged --quiet; then
+            echo "Aucun changement dans le PDF"
+          else
+            git commit -m "🤖 Auto-update compiled PDF [skip ci]"
+          fi
       
       - name: Push changes
+        if: steps.check_pdf.outputs.pdf_exists == 'true'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
