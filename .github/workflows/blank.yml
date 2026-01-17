@@ -7,6 +7,7 @@ on:
       - '**.tex'
       - '**.bib'
       - 'Chapters/**'
+      - 'imgs/**'
       - 'logos/**'
   workflow_dispatch:
 
