@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{rapportENSIAS}
 \RequirePackage{scrlfile}
-\AfterPackage{caption}{\let\caption@AtBeginDocument\@undefined}
+%\AfterPackage{caption}{\let\caption@AtBeginDocument\@undefined}
 \LoadClass[a4paper,12pt]{report} % Classe du document
 
 %--------------------- Packages ------------------------
