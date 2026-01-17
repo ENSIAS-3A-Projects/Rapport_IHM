@@ -19,67 +19,81 @@ jobs:
   build_latex:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
       
-      - name: Compile LaTeX document (Multiple passes)
-        uses: xu-cheng/latex-action@v3
-        with:
-          root_file: main.tex
-          latexmk_use_xelatex: false
-          latexmk_shell_escape: true
-          args: -pdf -interaction=nonstopmode -file-line-error
-          # Forcer la continuation même avec des warnings
-          continue_on_error: false
-        continue-on-error: true
-        id: latex_build
+      - name: 🔨 Compile LaTeX (3 passes for TOC)
+        run: |
+          echo "🔄 Compilation Pass 1/3..."
+          pdflatex -shell-escape -interaction=nonstopmode -file-line-error main.tex || true
+          
+          echo "🔄 Compilation Pass 2/3 (TOC generation)..."
+          pdflatex -shell-escape -interaction=nonstopmode -file-line-error main.tex || true
+          
+          echo "🔄 Compilation Pass 3/3 (Finalization)..."
+          pdflatex -shell-escape -interaction=nonstopmode -file-line-error main.tex
+          
+          echo "✅ Compilation terminée"
       
-      # Vérifier si le PDF existe malgré les erreurs
-      - name: Check if PDF was generated
+      - name: ✅ Verify PDF generation
         id: check_pdf
         run: |
           if [ -f "main.pdf" ]; then
             echo "pdf_exists=true" >> $GITHUB_OUTPUT
-            echo "✅ PDF généré avec succès"
+            echo "✅ PDF généré: $(du -h main.pdf | cut -f1)"
+            
+            # Vérifier la TOC
+            if grep -q "tableofcontents" main.log; then
+              echo "✅ Table des matières détectée dans le log"
+            fi
           else
             echo "pdf_exists=false" >> $GITHUB_OUTPUT
-            echo "❌ Erreur: PDF non généré"
+            echo "❌ Erreur: main.pdf non généré"
             exit 1
           fi
       
-      - name: Rename PDF
+      - name: 📝 Rename PDF
         if: steps.check_pdf.outputs.pdf_exists == 'true'
         run: |
-          mv main.pdf "IHM.pdf"
-          ls -lh IHM.pdf
+          cp main.pdf "IHM.pdf"
+          echo "📄 PDF final: IHM.pdf"
       
-      - name: Clean up auxiliary files
+      - name: 🧹 Clean auxiliary files
         if: steps.check_pdf.outputs.pdf_exists == 'true'
         run: |
-          rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk *.synctex.gz *.bbl *.blg *.bcf *.run.xml *.nav *.snm *.vrb
+          rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk
+          rm -f *.synctex.gz *.bbl *.blg *.bcf *.run.xml
           rm -rf _minted-*
-          find Chapters -name "*.aux" -type f -delete 2>/dev/null || true
+          find Chapters -name "*.aux" -delete 2>/dev/null || true
+          rm -f main.pdf
       
-      - name: Commit PDF to repository
+      - name: 📤 Commit PDF
         if: steps.check_pdf.outputs.pdf_exists == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add -f "IHM.pdf"
           
-          # Vérifier s'il y a des changements
-          if git diff --staged --quiet; then
-            echo "Aucun changement dans le PDF"
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 Auto-update PDF - $(date +'%Y-%m-%d %H:%M') [skip ci]"
           else
-            git commit -m "🤖 Auto-update compiled PDF [skip ci]"
+            echo "ℹ️ Aucun changement dans le PDF"
           fi
       
-      - name: Push changes
+      - name: 🚀 Push changes
         if: steps.check_pdf.outputs.pdf_exists == 'true'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
+      
+      - name: 📊 Upload artifact
+        if: steps.check_pdf.outputs.pdf_exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: IHM-PDF
+          path: IHM.pdf
+          retention-days: 30

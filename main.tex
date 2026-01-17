@@ -1,29 +1,35 @@
 \documentclass{rapportENSIAS}
+\usepackage{scrhack}
 \usepackage{lipsum}
+
+% Code source avec coloration
 \usepackage{minted}
-\definecolor{bg}{rgb}{0.95,0.95,0.95} % Adjust the RGB values as needed
-\usepackage{graphicx}  % Pour les images
-\usepackage{booktabs}  % Pour les jolis tableaux
-\usepackage{xcolor}    % Pour les couleurs (Rouge/Vert)
-\usepackage{float}     % Pour forcer le placement des images (H)
+\definecolor{bg}{rgb}{0.95,0.95,0.95}
 
-\usepackage{titlesec} % For customizing chapter and section titles
-\usepackage{tocloft} % For customizing the table of contents
-\usepackage{hyperref} % For adding hyperlinks
-\usepackage{tikz}               % Pour dessiner le Sitemap
-\usetikzlibrary{shapes,arrows,positioning,shadows}
-\usepackage{colortbl}           % Pour colorer les cellules du tablea 
-\definecolor{ensiasBlue}{RGB}{44, 62, 80} % Bleu ENSIAS (Optionnel)
+% Tableaux
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+% Couleurs (xcolor déjà chargé par la classe via hyperref)
+\definecolor{ensiasBlue}{RGB}{44, 62, 80}
 \definecolor{lightGray}{RGB}{240, 240, 240}
-% Désactiver les messages problématiques de tocbasic
-\PassOptionsToPackage{messages=off}{tocbasic}
 
-% OU mettre cette ligne avant \usepackage{nomencl}
-\RequirePackage{scrlfile}
-\PreventPackageFromLoading{tocbasic}
+% Diagrammes TikZ
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,shadows}
 
-\usepackage{nomencl}
-
+% ========================================
+% CONFIGURATION HYPERREF (déjà chargé par la classe)
+% ========================================
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ensiasBlue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={UrbanMove: approche IHM},
+    pdfauthor={ENSIAS - Groupe IHM},
+    pdfsubject={Rapport de Projet IHM}
+}
 
 \title{Rapport ENSIAS - Template} %Titre du fichier
 
@@ -67,16 +73,13 @@ Le résultat est un prototype haute fidélité articulé autour de deux axes erg
 \vspace{1cm}
 
 \newpage
-\chapter*{Introduction générale}
-\addcontentsline{toc}{chapter}{Introduction générale}
+\include{Chapters/introduction_générale} % modifier dans le fichier
 % intro
 %------------
 \newpage
 \tabledematieres %Créer la table de matières
-
-\newpage
 \listoffigures
-
+\addcontentsline{toc}{chapter}{Liste des figures}
 \newpage
 \listoftables
 
