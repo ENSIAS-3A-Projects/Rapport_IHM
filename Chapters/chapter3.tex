@@ -1,0 +1,120 @@
+\chapter{Phase d'Idéation \& Conception (Concevoir)}
+
+\section{Introduction : De la Problématique à la Solution}
+
+Suite à la définition de notre problématique au chapitre précédent — \textit{"Comment centraliser l'expérience de transport pour supprimer le stress et le cash ?"} — nous entrons ici dans la phase de conception concrète.
+
+Cette étape vise à traduire les besoins émotionnels de nos quatre personas (Safae, Sara, Ayoub et Manuel) en fonctionnalités techniques tangibles. Pour ce faire, nous avons adopté une approche Agile, en découpant le projet en récits utilisateurs (\textit{User Stories}) et en structurant l'information pour minimiser la friction cognitive.
+
+\section{Définition des Fonctionnalités (User Stories)}
+
+Afin de garantir que chaque développement apporte une valeur ajoutée réelle, nous utilisons le format BDD (\textit{Behavior Driven Development}) : \textbf{"En tant que [Persona], je veux [Action] afin de [Bénéfice]"}.
+
+Nous avons priorisé ces fonctionnalités selon la méthode \textbf{MoSCoW} (Must have, Should have, Could have, Won't have) pour définir le périmètre de notre MVP (\textit{Minimum Viable Product}).
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.6}
+    \footnotesize
+    \begin{tabular}{|p{0.15\textwidth}|p{0.60\textwidth}|p{0.15\textwidth}|}
+        \hline
+        \rowcolor{ensiasBlue!10} \textbf{Cible} & \textbf{User Story (Format BDD)} & \textbf{Priorité} \\
+        \hline
+        \textbf{Safae} \newline (L'Étudiante) & \textbf{En tant que} passagère quotidienne, \newline \textbf{Je veux} consulter la position du bus en temps réel sur une carte, \newline \textbf{Afin d'} optimiser mon temps et ne pas attendre inutilement à l'arrêt. & \textbf{MUST HAVE} \newline (Vital) \\
+        \hline
+        \textbf{Safae} \newline (L'Étudiante) & \textbf{En tant qu'} abonnée mensuelle, \newline \textbf{Je veux} renouveler et payer mon abonnement directement dans l'application, \newline \textbf{Afin d'} éviter les files d'attente aux guichets physiques chaque début de mois. & \textbf{MUST HAVE} \newline (Vital) \\
+        \hline
+        \rowcolor{ensiasBlue!10} \textbf{Sara} \newline (L'Occasionnelle) & \textbf{En tant qu'} utilisatrice sans espèces ("Cashless"), \newline \textbf{Je veux} acheter un ticket unitaire via ma carte bancaire, \newline \textbf{Afin de} pouvoir monter à bord immédiatement sans chercher de monnaie. & \textbf{MUST HAVE} \newline (Vital) \\
+        \hline
+        \textbf{Sara} \newline (L'Anxieuse) & \textbf{En tant que} novice du réseau, \newline \textbf{Je veux} rechercher un itinéraire optimisé d'un point A à un point B, \newline \textbf{Afin de} ne pas me perdre ou me tromper de ligne. & \textbf{SHOULD HAVE} \newline (Important) \\
+        \hline
+        \rowcolor{ensiasBlue!10} \textbf{Manuel} \newline (Le Touriste) & \textbf{En tant que} visiteur étranger, \newline \textbf{Je veux} visualiser les points d'intérêt touristiques sur la carte, \newline \textbf{Afin de} choisir ma destination visuellement sans connaître les noms de quartiers. & \textbf{COULD HAVE} \newline (Confort) \\
+        \hline
+        \textbf{Ayoub} \newline (Admin) & \textbf{En tant que} gestionnaire du réseau, \newline \textbf{Je veux} créer, modifier ou supprimer des lignes et des bus (CRUD), \newline \textbf{Afin d'} adapter l'offre de transport aux changements opérationnels. & \textbf{MUST HAVE} \newline (Back-Office) \\
+        \hline
+    \end{tabular}
+    \caption{Matrice des User Stories priorisées pour le MVP}
+    \label{tab:userstories}
+\end{table}
+
+\section{Architecture de l'Information (Sitemap)}
+
+Avant d'entamer le design des interfaces, nous avons structuré le parcours utilisateur (\textit{User Flow}). L'objectif ergonomique est de respecter la règle des "3 clics" pour l'action la plus critique : l'achat d'un titre de transport.
+
+Le schéma ci-dessous illustre l'arborescence de l'application mobile "Voyageur", telle qu'implémentée dans nos maquettes :
+
+\vspace{0.5cm}
+
+% Schéma TikZ pour le Sitemap (Navigation)
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.2cm and 1cm,
+        box/.style={rectangle, draw=gray!80, rounded corners=3pt, fill=white, align=center, minimum height=0.8cm, minimum width=2.5cm, drop shadow, font=\small},
+        root/.style={rectangle, draw=ensiasBlue, thick, rounded corners=3pt, fill=ensiasBlue!10, align=center, minimum height=1cm, minimum width=3cm, drop shadow, font=\bfseries},
+        arrow/.style={->, thick, >=stealth, color=gray!70}
+    ]
+
+    % Racine
+    \node[root] (home) {Accueil \\ (Dashboard)};
+
+    % Niveau 2
+    \node[box, below left=of home] (search) {Recherche \\ Trajet};
+    \node[box, below=of home] (map) {Carte \\ Temps Réel};
+    \node[box, below right=of home] (account) {Mon Compte \\ (Profil)};
+
+    % Niveau 3 (Processus d'achat)
+    \node[box, below=of search] (results) {Sélection \\ Itinéraire};
+    \node[box, below=of results, fill=green!5, draw=green!60] (payment) {Paiement \\ (Stripe/CMI)};
+    \node[box, below=of payment, fill=green!10, draw=green!80, font=\bfseries] (ticket) {E-Billet \\ (QR Code)};
+
+    % Liens
+    \draw[arrow] (home) -- (search);
+    \draw[arrow] (home) -- (map);
+    \draw[arrow] (home) -- (account);
+    \draw[arrow] (search) -- (results);
+    \draw[arrow] (results) -- (payment);
+    \draw[arrow] (payment) -- (ticket);
+    
+    % Annotation latérale
+    \node[right=0.5cm of ticket, text width=3cm, font=\footnotesize\itshape, color=gray] {Objectif atteint : \\ Billet obtenu en 3 étapes.};
+
+    \end{tikzpicture}
+    \caption{Sitemap : Parcours simplifié pour l'utilisateur}
+    \label{fig:sitemap}
+\end{figure}
+
+Ce flux de navigation valide le parcours de notre persona \textbf{Sara} : elle ouvre l'application, recherche sa destination, paie, et obtient son QR Code. La complexité technique (calcul d'itinéraire, transaction bancaire) est masquée derrière une interface linéaire.
+
+\section{Modélisation des Interactions (UML)}
+
+Pour formaliser le comportement du système, nous nous appuyons sur le Diagramme de Cas d'Utilisation. Au-delà de la simple liste des fonctions, ce diagramme met en lumière les interactions dynamiques entre nos deux types d'acteurs : le \textbf{Voyageur} (Front-Office) et l' \textbf{Administrateur} (Back-Office).
+
+\begin{figure}[H]
+    \centering
+    % Assurez-vous que le chemin correspond à votre dossier repo
+    \includegraphics[width=0.95\linewidth]{imgs/use case diagram.png} 
+    \caption{Diagramme de Cas d'Utilisation Global}
+    \label{fig:usecase}
+\end{figure}
+
+\subsection{Analyse des Interactions Clés}
+
+Ce diagramme structure notre architecture en deux zones distinctes :
+
+\begin{itemize}
+    \item \textbf{La Zone "Consommateur" (Voyageur) :} 
+    Représentée à gauche, elle regroupe les cas d'utilisation liés à la consultation (Read) et à l'achat. L'interaction est ici de type "Temps Réel". Le système doit répondre instantanément aux requêtes de géolocalisation de \textbf{Safae} et \textbf{Manuel}.
+    
+    \item \textbf{La Zone "Gestionnaire" (Admin) :} 
+    Représentée à droite, elle concerne la modification des données structurelles (Create/Update/Delete). \textbf{Ayoub}, en tant qu'administrateur, interagit avec le système pour définir les routes et gérer la flotte. Ces actions ont un impact direct et immédiat sur ce que voient les voyageurs.
+    
+    \item \textbf{Le Point de Convergence (Booking) :} 
+    Le cas d'utilisation "Manage Booking" est le pivot du système. Il relie la demande de l'utilisateur (le besoin de déplacement) à l'offre gérée par l'administrateur (le bus disponible), illustrant la logique transactionnelle de notre solution SOA.
+\end{itemize}
+
+\section{Conclusion de la Conception}
+
+L'architecture de l'information et l'analyse fonctionnelle confirment notre stratégie : proposer une application "Voyageur" minimaliste pour réduire le stress (Sara), soutenue par un Back-Office administrateur robuste pour garantir la fiabilité des données (Ayoub).
+
+Le chapitre suivant détaillera l'implémentation technique de ces choix au travers de l'architecture Microservices.

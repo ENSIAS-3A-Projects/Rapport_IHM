@@ -1,0 +1,127 @@
+\chapter{Phase de Prototypage \& Réalisation (Maquetter)}
+
+\section{Introduction : Du concept au pixel}
+
+Après avoir défini l'architecture fonctionnelle, nous passons à la matérialisation de la solution. Ce chapitre présente les interfaces finales (\textit{High-Fidelity Mockups}) développées pour répondre aux besoins de nos personas.
+
+Nos choix de design ne sont pas purement esthétiques ; ils reposent sur des principes d'ergonomie cognitive visant à réduire la charge mentale de l'utilisateur occasionnel (Sara) et à accélérer les interactions de l'utilisateur expert (Safae).
+
+\section{Charte Graphique \& Choix de Design}
+
+Pour garantir une adoption rapide, nous avons opté pour un \textit{Design System} minimaliste et rassurant.
+
+\subsection{Palette Chromatique}
+Nous avons sélectionné une palette fonctionnelle basée sur la psychologie des couleurs :
+\begin{itemize}
+    \item \textbf{Le Bleu Profond (Primary) :} Utilisé pour les actions principales (Boutons, Navigation). Il inspire la confiance institutionnelle et la sécurité.
+    \item \textbf{Le Vert "Success" :} Utilisé exclusivement pour les feedbacks positifs (Paiement validé, Trajet trouvé). Il valide l'action de l'utilisateur.
+    \item \textbf{Le Blanc \& Gris (Background) :} Maximise la lisibilité du contenu et réduit la fatigue visuelle.
+\end{itemize}
+
+\subsection{Typographie \& Lisibilité}
+Nous utilisons une police \textit{Sans-Serif} moderne (type Roboto/Inter) qui offre une lisibilité optimale sur écran mobile, même en mouvement (contexte de marche ou de transport). La hiérarchie visuelle est marquée par des contrastes forts (Gras/Regular) pour guider l'œil vers l'information essentielle (Heure, Prix).
+
+\section{Maquettes Haute-Fidélité : L'Expérience Passager (Front-Office)}
+
+L'application "Voyageur" a été conçue comme un assistant personnel de mobilité.
+
+\subsection{L'Accueil et l'Affordance}
+La page d'accueil (Dashboard) est le point d'entrée critique. Nous avons appliqué le principe d'\textbf{affordance} : les éléments cliquables ressemblent physiquement à des boutons pour inciter à l'action sans ambiguïté.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{imgs/home_page.png}
+    \caption{Écran d'Accueil : Accès direct aux fonctionnalités clés (Recherche, Carte, Historique).}
+    \label{fig:homepage}
+\end{figure}
+
+Comme on le voit sur la Figure \ref{fig:homepage}, l'interface est épurée. Les options "Find a trip" ou "History" sont immédiatement accessibles, respectant la Loi de Fitts (cibles larges et proches).
+
+\subsection{Le Tunnel d'Achat (User Flow)}
+Pour répondre au besoin de \textbf{Sara} (l'automobiliste pressée), le parcours d'achat a été réduit à sa plus simple expression. La séquence est linéaire : \textbf{Recherche $\rightarrow$ Paiement $\rightarrow$ Billet}.
+
+\begin{figure}[H]
+    \centering
+    % Première image : Sélection
+    \begin{center}
+        \includegraphics[width=1\linewidth]{imgs/paiement ticket.png}
+        \caption{1. Sélection du trajet et choix du tarif.}
+    \end{center}
+\end{figure}
+    \vspace{0.5cm} % Espace entre les images
+    
+    % Deuxième image : Méthode de paiement
+    \begin{figure}[H]
+    \centering
+    \begin{center}
+        \includegraphics[width=1\linewidth]{imgs/ajout method paiement.png}
+        \caption{2. Interface d'ajout de la méthode de paiement (Sécurisée).}
+    \end{center}
+\end{figure}
+    \vspace{0.5cm}
+    
+    % Troisième image : Succès
+    \begin{figure}[H]
+    \centering
+    \begin{center}
+        \includegraphics[width=1\linewidth]{imgs/paiement successful.png}
+        \caption{3. Feedback : Confirmation du succès de la transaction.}
+    \end{center}
+\end{figure}
+
+Un point crucial ici est le \textbf{Feedback Utilisateur}. Lorsqu'un paiement est effectué, le système confirme explicitement le succès par un écran dédié (Figure \ref{fig:purchase_flow}.2). Cela assure une clôture psychologique de l'action financière, réduisant l'anxiété liée à l'utilisation d'un nouveau service.
+
+Un point crucial ici est le \textbf{Feedback Utilisateur} (Figure du milieu). Lorsqu'un paiement est effectué, le système ne se contente pas d'afficher le billet ; il confirme explicitement le succès par un écran vert et une icône de validation. Cela rassure l'utilisateur sur le fait que sa transaction financière a bien abouti.
+
+\subsection{La Carte et la Réassurance (Real-Time)}
+Pour \textbf{Safae} et \textbf{Manuel}, l'incertitude est la source majeure de stress. L'écran de cartographie répond à ce besoin par la visualisation temps réel.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{imgs/carte avec trajet selectionee.png}
+    \caption{Visualisation du trajet : L'utilisateur voit le tracé et sa position.}
+    \label{fig:map_view}
+\end{figure}
+
+Le fait de voir le tracé bleu sur la carte (Figure \ref{fig:map_view}) offre une \textbf{réassurance cognitive}. L'utilisateur sait qu'il est sur la bonne route et peut anticiper son arrêt.
+
+
+\section{Maquettes Haute-Fidélité : L'Interface Administrateur (Back-Office)}
+
+Alors que l'interface conducteur se focalise sur l'opérationnel terrain, l'interface d'administration (\textbf{Back-Office}) a été conçue pour la supervision stratégique et la gestion des données. Elle vise la \textbf{productivité} et la \textbf{vision globale}.
+
+\subsection{Dashboard de Supervision}
+Le tableau de bord permet à l'Administrateur de surveiller l'état de santé du réseau en un coup d'œil. Il centralise les indicateurs clés (KPIs) : nombre d'utilisateurs inscrits, routes actives et tickets vendus.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{imgs/tableau de bord.png}
+    \caption{Dashboard Admin : Vue synthétique des indicateurs clés pour la prise de décision.}
+    \label{fig:admin_dash}
+\end{figure}
+
+Nous avons privilégié la \textbf{Data Visualization} (Graphiques, Cartes) plutôt que des tableaux bruts. Comme le montre la Figure \ref{fig:admin_dash}, cela permet d'identifier rapidement les tendances globales du réseau sans avoir à fouiller dans la base de données.
+
+\subsection{Gestion Financière et Analytique}
+Pour répondre au besoin de suivi de rentabilité, nous avons développé un module financier dédié. Il offre une transparence totale sur les revenus générés par la billettique numérique.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{imgs/page finance.png}
+    \caption{Analyse des Revenus : Suivi mensuel de la performance économique.}
+    \label{fig:admin_finance}
+\end{figure}
+
+Cette interface (Figure \ref{fig:admin_finance}) permet au gestionnaire d'analyser les pics de revenus et d'ajuster la stratégie commerciale (ex: promotions en période creuse) basées sur des données réelles.
+
+\section{Conclusion Générale de la Réalisation}
+
+La réalisation de ces interfaces démontre que nous avons répondu aux problématiques soulevées au Chapitre 1 :
+
+\begin{enumerate}
+    \item \textbf{Contre le Stress (Incertitude) :} L'interface "Carte" apporte la visibilité manquante.
+    \item \textbf{Contre la Monnaie (Friction) :} Le tunnel de paiement intégré supprime la manipulation d'espèces.
+    \item \textbf{Contre la Complexité :} L'ergonomie épurée permet à un touriste ou un novice de naviguer sans apprentissage.
+\end{enumerate}
+
+Ce prototype valide la faisabilité technique et l'acceptabilité ergonomique de la solution UrbanMove.

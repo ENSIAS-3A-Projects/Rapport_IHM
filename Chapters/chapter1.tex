@@ -1,0 +1,216 @@
+\chapter{Phase d'Empathie \& Recherche (Comprendre)}
+
+% ==============================================================================
+% 1. CONTEXTE & PRESENTATION
+% ==============================================================================
+\section{Contexte : L'Optimisation par l'IHM}
+
+Le projet \textbf{UrbanMove} s'inscrit dans une démarche d'\textbf{optimisation d'un existant}. Le réseau de transport actuel dispose déjà d'une infrastructure technique fonctionnelle (flotte de bus, capteurs GPS, API backend), mais souffre d'un déficit majeur d'adoption dû à une interface utilisateur obsolète, voire inexistante.
+
+Notre mission n'est pas de refondre le code métier (backend), mais de concevoir une \textbf{couche d'interaction (Frontend/IHM)} capable de valoriser ces données pour l'usager. L'objectif est de passer d'un système "fonctionnel" à un système "utilisable et désirable".
+
+\section{Présentation du Projet UrbanMove : Une couche d'interaction unifiée}
+
+Le projet \textbf{UrbanMove} ne se définit pas comme une simple application de billettique, mais comme une plateforme de **Mobilité en tant que Service (MaaS)**. Dans un contexte où l'infrastructure technique (flotte de bus, capteurs GPS, API de calcul d'itinéraire) préexistait mais restait inexploitée faute d'interface, UrbanMove vient se greffer comme la \textbf{couche d'interaction} (Frontend) indispensable pour valoriser ces données.
+
+L'ambition est de transformer une infrastructure "passive" en un service "proactif" et centré sur l'utilisateur, à travers deux interfaces distinctes mais interconnectées.
+
+\subsection{L'Écosystème UrbanMove}
+
+Le système repose sur une architecture duale, répondant à deux besoins contradictoires : la simplicité pour le grand public et la densité d'information pour les gestionnaires.
+
+\subsubsection{1. Le Module Passager (Application Mobile)}
+Il s'agit du point de contact unique pour l'usager. Conçue pour une utilisation en mobilité ("On-the-go"), cette interface vise à réduire la charge cognitive liée au voyage. Elle intègre trois piliers fonctionnels :
+\begin{itemize}
+    \item \textbf{Information Voyageur Temps Réel (IVTR) :} Contrairement aux fiches horaires statiques, l'application interroge les capteurs GPS existants pour afficher la position exacte des bus sur une carte interactive, supprimant l'incertitude de l'attente.
+    \item \textbf{Dématérialisation (M-Ticketing) :} Le module d'achat permet l'acquisition instantanée de titres (unitaires ou abonnements) et génère un \textbf{QR Code dynamique} pour la validation, supprimant la gestion des espèces à bord.
+    \item \textbf{Guidage Assisté :} Un planificateur d'itinéraire multimodal qui suggère les correspondances optimales en fonction du trafic.
+\end{itemize}
+
+\subsubsection{2. Le Module Administration (Dashboard Web)}
+Destiné aux régulateurs et gestionnaires du réseau, ce tableau de bord transforme les données brutes du backend en outils d'aide à la décision. Il permet :
+\begin{itemize}
+    \item \textbf{La Supervision (Monitoring) :} Visualisation globale de la flotte, état de santé des bus et alertes en cas de retard critique.
+    \item \textbf{La Gestion Commerciale :} Création de nouvelles lignes, modification des tarifs et gestion des comptes utilisateurs.
+    \item \textbf{L'Analyse de Données (Business Intelligence) :} Des graphiques détaillés sur les revenus par ligne et les pics d'affluence, permettant d'adapter l'offre à la demande.
+\end{itemize}
+
+\subsection{Objectifs de l'Optimisation IHM}
+
+Le défi technique de ce projet ne résidait pas dans la logique métier (déjà gérée par des microservices Spring Boot), mais dans l'\textbf{utilisabilité}. L'intervention IHM a visé trois objectifs de performance :
+
+\begin{enumerate}
+    \item \textbf{Réduction de la Frictionalité :} Passer de 5 étapes pour acheter un ticket (guichet physique) à 3 "taps" sur l'écran (Loi de Fitts).
+    \item \textbf{Feedback Système Immédiat :} Fournir une confirmation visuelle ou haptique pour chaque action critique (paiement validé, bus en approche), appliquant ainsi la première heuristique de Nielsen (Visibilité de l'état du système).
+    \item \textbf{Accessibilité Universelle :} Concevoir des interfaces contrastées et lisibles, adaptées aussi bien aux étudiants pressés qu'aux usagers occasionnels peu technophiles.
+\end{enumerate}
+
+\subsection{Positionnement de la solution}
+En résumé, UrbanMove agit comme le \textbf{liant numérique} entre une infrastructure physique complexe et un usager en quête de simplicité. Là où l'ancien système se contentait de "faire rouler des bus", la nouvelle interface UrbanMove promet de "piloter une expérience de voyage".
+
+% ==============================================================================
+% 3. METHODOLOGIE & ANALYSE DETAILLEE
+% ==============================================================================
+\section{Analyse Quantitative Détaillée : La Voix de l'Utilisateur}
+
+Pour garantir la pertinence de cette refonte IHM, nous avons adopté la méthode du \textbf{Design Thinking}. Cette phase d'Empathie s'appuie sur une enquête quantitative rigoureuse menée auprès de \textbf{29 participants}. Nous analysons ici chaque question pour en extraire une directive de conception IHM.
+
+% --- Q1 AGE ---
+\subsection{Q1. Tranche d'âge : Une cible "Digital Native"}
+\textbf{Données :} 58,6 \% des répondants ont entre 18 et 25 ans, et 20,7 \% ont moins de 18 ans.
+\newline
+\textbf{Analyse :} La quasi-totalité de nos utilisateurs (près de 80\%) est née avec le numérique. Ils sont habitués aux standards UX élevés des géants du web (Uber, Instagram).
+\newline
+\textbf{Implication IHM :} L'interface doit être fluide, réactive et privilégier le "Mobile First". Le mode sombre (Dark Mode) est une fonctionnalité attendue par cette cible.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{imgs/graph_age.png}
+    \caption{Q1 : Répartition démographique jeune}
+\end{figure}
+
+% --- Q2 DIFFICULTES CONDUCTEUR ---
+\subsection{Q2. Difficultés Métier : Le besoin de visibilité}
+\textbf{Données :} 57,1 \% des gestionnaires citent le "Manque de visibilité en temps réel sur la position des bus" comme difficulté majeure. La gestion de la monnaie est aussi un irritant.
+\newline
+\textbf{Analyse :} Les opérateurs sont aveugles. Ils gèrent le réseau "à l'instinct" sans données fiables.
+\newline
+\textbf{Implication IHM (Admin) :} Le Dashboard ne doit pas être un tableur Excel. Il doit offrir une \textbf{Carte de Supervision} en temps réel pour piloter la flotte visuellement.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{imgs/graph_cond_frust.png}
+    \caption{Q2 : Les angles morts de la gestion actuelle}
+\end{figure}
+
+% --- Q3 ROLE ---
+\subsection{Q3. Rôle : L'équilibre Expert / Novice}
+\textbf{Données :} Égalité parfaite (37,9 \%) entre les usagers Quotidiens (Experts) et Occasionnels (Novices).
+\newline
+\textbf{Analyse :} L'application doit servir deux maîtres. L'expert veut aller vite, le novice veut être rassuré.
+\newline
+\textbf{Implication IHM :} Conception d'une navigation "Dual-Mode". Des raccourcis "Favoris" en un clic pour les habitués, et un moteur de recherche d'itinéraire guidé pas-à-pas pour les nouveaux.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/graph_role.png}
+    \caption{Q3 : Répartition des profils d'usage}
+\end{figure}
+
+% --- Q4 FREQUENCE ---
+\subsection{Q4. Fréquence : Un outil du quotidien}
+\textbf{Données :} 41,4 \% utilisent le bus "Tous les jours".
+\newline
+\textbf{Analyse :} L'application sera ouverte plusieurs fois par jour. La moindre friction (temps de chargement, clic inutile) deviendra insupportable à la longue.
+\newline
+\textbf{Implication IHM :} Optimisation de la performance (Loi de Doherty : réponse < 400ms) et persistance de la session (pas de reconnexion à chaque fois).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/graph_freq.png}
+    \caption{Q4 : Intensité d'usage}
+\end{figure}
+
+% --- Q5 SATISFACTION ---
+\subsection{Q5. Satisfaction Actuelle : L'urgence du changement}
+\textbf{Données :} 48,1 \% sont "Très insatisfaits" (Note 1/5) de l'achat physique.
+\newline
+\textbf{Analyse :} Le système de billettique actuel est le point noir de l'expérience. C'est un irritant majeur.
+\newline
+\textbf{Implication IHM :} Le module d'achat (M-Ticket) doit être la fonctionnalité la plus accessible, placée au centre de la barre de navigation (Tab Bar).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imgs/graph_satis.png}
+    \caption{Q5 : Rejet massif de la billettique physique}
+\end{figure}
+
+% --- Q6 FRUSTRATIONS ---
+\subsection{Q6. Frustrations : Le stress de l'inconnu}
+\textbf{Données :} "Incertitude horaire" et "Manque de visibilité géographique" sont cités par 58,6 \% des usagers.
+\newline
+\textbf{Analyse :} L'usager ne déteste pas attendre, il déteste \textit{ne pas savoir combien de temps} il va attendre.
+\newline
+\textbf{Implication IHM :} Affichage proéminent du "Temps d'attente réel" (et non théorique) avec un code couleur (Vert = À l'heure, Rouge = Retard).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imgs/graph_frust.png}
+    \caption{Q6 : Les facteurs de stress}
+\end{figure}
+
+% --- Q7 & Q8 IMPORTANCE ---
+\subsection{Q7 \& Q8. Attentes : Plébiscite pour le Digital}
+\textbf{Données :} L'achat In-App et la Géolocalisation obtiennent des scores d'importance supérieurs à 4.2/5.
+\newline
+\textbf{Analyse :} Il y a une forte demande (Market Pull) pour ces fonctionnalités. Ce ne sont pas des gadgets, mais des prérequis.
+\newline
+\textbf{Implication IHM :} Ces deux fonctionnalités doivent constituer le cœur de l'expérience (Core Features).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{imgs/graph_sol.png}
+    \includegraphics[width=0.8\textwidth]{imgs/graph_rating.png}
+    \caption{Q7/Q8 : Validation de la proposition de valeur}
+\end{figure}
+
+% --- Q9 SCENARIOS ---
+\subsection{Q9. Scénarios Futurs : La demande de proactivité}
+\textbf{Données :} Le scénario "Notification 5 min avant l'arrivée" reçoit les meilleures notes.
+\newline
+\textbf{Analyse :} L'utilisateur veut une application qui "veille" pour lui, plutôt que de devoir vérifier sa montre toutes les 30 secondes.
+\newline
+\textbf{Implication IHM :} Intégration d'un système de \textbf{Push Notifications} intelligent et contextuel.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{imgs/graph_solus.png}
+    \caption{Q9 : Préférence pour l'assistance proactive}
+\end{figure}
+
+% --- Q10 OUTILS ---
+\subsection{Q10. Outils Métier : Efficacité opérationnelle}
+\textbf{Données :} 66,7 \% demandent la "Validation simplifiée".
+\newline
+\textbf{Analyse :} Le conducteur ne doit pas perdre de temps à contrôler des écrans complexes.
+\newline
+\textbf{Implication IHM :} Interface conducteur épurée avec un gros bouton "SCAN" et un feedback sonore (Bip valide / Bip invalide).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imgs/graph_condu.png}
+    \caption{Q10 : Priorités pour l'interface conducteur}
+\end{figure}
+
+% ==============================================================================
+% 4. SYNTHESE
+% ==============================================================================
+\section{Synthèse : Matrice de Transition (Data $\rightarrow$ Design)}
+
+Cette analyse exhaustive nous permet de dresser la liste définitive des besoins fonctionnels et de leurs traductions en composants d'interface.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{@{}p{4cm} p{4cm} p{8.5cm}@{}}
+        \toprule
+        \textbf{Source (Question)} & \textbf{Besoin Identifié} & \textbf{Traduction IHM (Composant)} \\
+        \midrule
+        Q6 (Incertitude) & Réassurance temporelle & \textbf{Carte Live} avec icônes de bus en mouvement et décompte temps réel. \\
+        \midrule
+        Q5 (Achat) & Autonomie & \textbf{Store In-App} avec tunnel de paiement simplifié (3 étapes max). \\
+        \midrule
+        Q3 (Habitude) & Rapidité d'accès & \textbf{Widget "Favoris"} sur l'écran d'accueil pour lancer un trajet en 1 tap. \\
+        \midrule
+        Q9 (Notification) & Assistance proactive & \textbf{Alertes Push} "Votre bus arrive dans 5 min". \\
+        \midrule
+        Q2/Q10 (Métier) & Supervision & \textbf{Dashboard Admin} avec vue "Tour de contrôle" et Scan QR rapide. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Matrice de transition : Du problème à la solution IHM}
+    \label{tab:transition}
+\end{table}
+
+\section*{Conclusion du Chapitre}
+
+L'enquête a permis de dépasser les simples suppositions. Nous savons désormais précisément \textit{pour qui} nous concevons (des jeunes connectés et pressés) et \textit{quoi} concevoir (une app de temps réel et de billettique). Ces données fondatrices nous permettent de modéliser nos \textbf{Personas} au chapitre suivant, qui incarneront ces statistiques dans des profils humains tangibles.

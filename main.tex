@@ -1,0 +1,103 @@
+\documentclass{rapportENSIAS}
+\usepackage{lipsum}
+\usepackage{minted}
+\definecolor{bg}{rgb}{0.95,0.95,0.95} % Adjust the RGB values as needed
+\usepackage{graphicx}  % Pour les images
+\usepackage{booktabs}  % Pour les jolis tableaux
+\usepackage{xcolor}    % Pour les couleurs (Rouge/Vert)
+\usepackage{float}     % Pour forcer le placement des images (H)
+
+\usepackage{titlesec} % For customizing chapter and section titles
+\usepackage{tocloft} % For customizing the table of contents
+\usepackage{hyperref} % For adding hyperlinks
+\usepackage{tikz}               % Pour dessiner le Sitemap
+\usetikzlibrary{shapes,arrows,positioning,shadows}
+\usepackage{colortbl}           % Pour colorer les cellules du tablea 
+\definecolor{ensiasBlue}{RGB}{44, 62, 80} % Bleu ENSIAS (Optionnel)
+\definecolor{lightGray}{RGB}{240, 240, 240}
+
+
+\title{Rapport ENSIAS - Template} %Titre du fichier
+
+\begin{document}
+
+%----------- Informations du rapport ---------
+
+\titre{Titre du rapport} %Titre du fichier .pdf
+%\UE{UE PRO} %Nom de la UE
+\sujet{Projet de Fin d'Année} %Nom du sujet
+
+\enseignant{Prénom \textsc{Nom}} %Nom de l'enseignant
+
+\eleves{Saad \textsc{ALAOUI SOSSE} \\
+		Med Chadi \textsc{TAQI} \\ 
+        Chaymae \textsc{BOUAZZA} \\ 
+		Imane \textsc{BENABBOU} } 
+
+\jury{ DR B. \textsc{BERRADA}\\ 
+    }
+
+%----------- Initialisation -------------------
+        
+\fairemarges %Afficher les marges
+\fairepagedegarde % Créer la page de garde
+
+%--------------les premiers pages--------------
+\chapter*{Remerciements}
+\include{Chapters/remerciement} % modifier dans le fichier 
+\newpage
+\section*{Résumé}
+
+Dans un contexte urbain où la mobilité est souvent synonyme de friction et de stress cognitif, ce projet explore la refonte numérique de l'expérience de transport public. L'objectif principal n'était pas seulement de digitaliser un service, mais de concevoir une \textbf{Interaction Homme-Machine (IHM)} capable de rassurer l'usager et de simplifier ses décisions.
+
+En adoptant une démarche de \textbf{Conception Centrée Utilisateur (CCU)}, nous avons d'abord modélisé les modèles mentaux de nos usagers à travers des Personas (de l'étudiante experte au touriste désorienté). Cette phase d'analyse a guidé le design de nos interfaces, privilégiant l'affordance, le feedback immédiat et la minimisation de la charge mentale.
+
+Le résultat est un prototype haute fidélité articulé autour de deux axes ergonomiques : la visualisation spatiale en temps réel (pour combler le besoin de réassurance) et la linéarisation du parcours d'achat (pour éliminer les obstacles transactionnels). Ce rapport démontre comment une interface bien pensée peut transformer une contrainte quotidienne en une expérience fluide.
+
+\vspace{0.5cm}
+\textbf{Mots-clés :} IHM, Expérience Utilisateur (UX), Design Thinking, Personas, Prototypage, Affordance, Mobilité Intelligente.
+
+\vspace{1cm}
+
+\newpage
+\chapter*{Introduction générale}
+\addcontentsline{toc}{chapter}{Introduction générale}
+% intro
+%------------
+\newpage
+\tabledematieres %Créer la table de matières
+
+\newpage
+\listoffigures
+
+\newpage
+\listoftables
+
+
+%------------ Corps du rapport ----------------
+\include{Chapters/chapter1}
+\include{Chapters/chapter2}
+\include{Chapters/chapter3}
+\include{Chapters/chapter4}
+
+%------------ Liste of listings----------------
+%\renewcommand\listoflistingscaption{Liste des codes source}
+%\listoflistings
+\newpage
+\chapter*{Conclusion Générale}
+\addcontentsline{toc}{chapter}{Conclusion Générale}
+% conclusion
+
+\newpage
+%\chapter*{Références}
+%\addcontentsline{toc}{chapter}{Références}
+% i didn't use the citation system using .bib file , you can add it if you want
+\bibliographystyle{plain} % We choose the "plain" reference style
+\bibliography{refs}
+
+\newpage
+\chapter*{Annexes}
+\addcontentsline{toc}{chapter}{Annexes}
+% add your sections here of each annexe
+
+\end{document}
