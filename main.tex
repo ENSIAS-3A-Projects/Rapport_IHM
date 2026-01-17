@@ -15,6 +15,14 @@
 \usepackage{colortbl}           % Pour colorer les cellules du tablea 
 \definecolor{ensiasBlue}{RGB}{44, 62, 80} % Bleu ENSIAS (Optionnel)
 \definecolor{lightGray}{RGB}{240, 240, 240}
+% Désactiver les messages problématiques de tocbasic
+\PassOptionsToPackage{messages=off}{tocbasic}
+
+% OU mettre cette ligne avant \usepackage{nomencl}
+\RequirePackage{scrlfile}
+\PreventPackageFromLoading{tocbasic}
+
+\usepackage{nomencl}
 
 
 \title{Rapport ENSIAS - Template} %Titre du fichier

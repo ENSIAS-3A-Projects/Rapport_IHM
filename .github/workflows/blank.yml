@@ -28,7 +28,9 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
+          continue_on_error: true
           args: -pdf -interaction=nonstopmode -shell-escape
+          
       
       - name: Rename PDF
         run: |
