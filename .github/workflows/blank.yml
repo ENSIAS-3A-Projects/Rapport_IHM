@@ -18,95 +18,38 @@ permissions:
 jobs:
   build_latex:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0
       
-      - name: 🔨 Compile LaTeX document (with latexmk for multiple passes)
+      - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
           root_file: main.tex
-          latexmk_shell_escape: true
-          # latexmk fait automatiquement plusieurs passes pour la TOC
-          args: -pdf -interaction=nonstopmode -file-line-error
-        continue-on-error: true
-        id: latex_build
+          args: -pdf -interaction=nonstopmode -shell-escape
       
-      - name: ✅ Verify PDF generation
-        id: check_pdf
+      - name: Rename PDF
         run: |
-          if [ -f "main.pdf" ]; then
-            echo "pdf_exists=true" >> $GITHUB_OUTPUT
-            PDF_SIZE=$(du -h main.pdf | cut -f1)
-            echo "✅ PDF généré avec succès: $PDF_SIZE"
-            
-            # Vérifier le nombre de pages
-            if command -v pdfinfo &> /dev/null; then
-              PAGES=$(pdfinfo main.pdf 2>/dev/null | grep "Pages:" | awk '{print $2}')
-              echo "📄 Nombre de pages: $PAGES"
-            fi
-          else
-            echo "pdf_exists=false" >> $GITHUB_OUTPUT
-            echo "❌ Erreur: main.pdf non généré"
-            
-            # Afficher les erreurs du log si disponible
-            if [ -f "main.log" ]; then
-              echo "🔍 Dernières lignes du log:"
-              tail -n 30 main.log
-            fi
-            exit 1
-          fi
-      
-      - name: 📝 Rename PDF
-        if: steps.check_pdf.outputs.pdf_exists == 'true'
-        run: |
-          cp main.pdf "IHM.pdf"
-          echo "📄 Fichier final: IHM.pdf ($(du -h IHM.pdf | cut -f1))"
-      
-      - name: 🧹 Clean auxiliary files
-        if: steps.check_pdf.outputs.pdf_exists == 'true'
-        run: |
-          # Supprimer les fichiers temporaires APRÈS la compilation
-          rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk
-          rm -f *.synctex.gz *.bbl *.blg *.bcf *.run.xml *.nav *.snm *.vrb
-          rm -rf _minted-* __pycache__
-          find Chapters -name "*.aux" -delete 2>/dev/null || true
-          rm -f main.pdf
+          mv main.pdf "IHM.pdf"
           
-          echo "🗑️ Fichiers temporaires supprimés"
-      
-      - name: 📤 Commit PDF to repository
-        if: steps.check_pdf.outputs.pdf_exists == 'true'
+      - name: Clean up auxiliary files
+        run: |
+          rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk *.synctex.gz *.bbl *.blg *.bcf *.run.xml *.nav *.snm *.vrb
+          rm -rf _minted-*
+          find . -name "*.aux" -type f -delete
+          
+      - name: Commit PDF to repository
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
-          # Ajouter le PDF
           git add -f "IHM.pdf"
+          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Auto-update compiled PDF [skip ci]"
           
-          # Vérifier s'il y a des changements
-          if git diff --staged --quiet; then
-            echo "ℹ️ Aucun changement dans le PDF"
-          else
-            BUILD_DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
-            git commit -m "🤖 Auto-update PDF - $BUILD_DATE [skip ci]"
-            echo "✅ PDF commité avec succès"
-          fi
-      
-      - name: 🚀 Push changes
-        if: steps.check_pdf.outputs.pdf_exists == 'true'
+      - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-      
-      - name: 📊 Upload PDF as artifact
-        if: steps.check_pdf.outputs.pdf_exists == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: IHM-PDF-${{ github.run_number }}
-          path: IHM.pdf
-          retention-days: 30
