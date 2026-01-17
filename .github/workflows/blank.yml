@@ -1,0 +1,55 @@
+
+name: Build LaTeX and Commit PDF
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - '**.tex'
+      - '**.bib'
+      - 'Chapters/**'
+      - 'logos/**'
+  workflow_dispatch:
+
+# Add this permissions block
+permissions:
+  contents: write
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          args: -pdf -interaction=nonstopmode -shell-escape
+      
+      - name: Rename and compress PDF
+        run: |
+          mv main.pdf "IHM.pdf"
+          
+      - name: Clean up auxiliary files
+        run: |
+          rm -f *.aux *.log *.out *.toc *.lof *.lot *.fls *.fdb_latexmk *.synctex.gz *.bbl *.blg *.bcf *.run.xml *.nav *.snm *.vrb
+          rm -rf _minted-*
+          find . -name "*.aux" -type f -delete
+          
+      - name: Commit PDF to repository
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -f "Veille Technologique.pdf"
+          git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Auto-update compiled PDF [skip ci]"
+          
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
